@@ -45,7 +45,8 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private boolean isRecording = false;
     private String recordPermission = Manifest.permission.RECORD_AUDIO;
     private String folderPermission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-    private int PERMISSION_CODE = 21;
+    private int PERMISSION_CODE1 = 21;
+    private int PERMISSION_CODE2 = 22;
     private AudioRecord recorder = null;
     private int bufferSize = 0;
     private boolean timerRunning = false;
@@ -58,6 +59,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_STEREO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     short[] audioData;
+    private ClientSocket socket;
 
 
     public RecordFragment() {
@@ -83,6 +85,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                 (RECORDER_SAMPLERATE,RECORDER_CHANNELS,RECORDER_AUDIO_ENCODING)*3;
 
         audioData = new short [bufferSize];
+        socket = new ClientSocket();
     }
 
     @Override
@@ -97,10 +100,12 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                 }
                 else{
                     //Start Recording
-                    if(checkPermissions()) {
-                        isRecording = true;
-                        startRec();
-                    }
+
+                        if(checkPermissionsMic() && checkPermissionsDir()) {
+                            isRecording = true;
+                            startRec();
+                        }
+
                 }
                 break;
         }
@@ -132,6 +137,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         countdownText.setText("0:10");
         timerRunning = false;
         isRecording = false;
+        socket.run();
 
 
 
@@ -345,13 +351,23 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         countdownText.setText(timeLeftText);
     }
 
-    private boolean checkPermissions() {
-        if(ActivityCompat.checkSelfPermission(getContext(), recordPermission) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), folderPermission) == PackageManager.PERMISSION_GRANTED){
+    private boolean checkPermissionsMic() {
+        if(ActivityCompat.checkSelfPermission(getContext(), recordPermission) == PackageManager.PERMISSION_GRANTED ){
             return true;
         }
         else{
-            ActivityCompat.requestPermissions(getActivity(), new String[]{folderPermission}, PERMISSION_CODE);
-            ActivityCompat.requestPermissions(getActivity(), new String[]{recordPermission}, PERMISSION_CODE);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{recordPermission}, PERMISSION_CODE1);
+            return false;
+        }
+
+    }
+
+    private boolean checkPermissionsDir(){
+        if(ActivityCompat.checkSelfPermission(getContext(), folderPermission) == PackageManager.PERMISSION_GRANTED){
+            return true;
+        }
+        else{
+            ActivityCompat.requestPermissions(getActivity(), new String[]{folderPermission}, PERMISSION_CODE2);
             return false;
         }
     }
