@@ -41,7 +41,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private ImageView recordBtn;
     private TextView countdownText;
     private CountDownTimer countDownTimer;
-    private long timeLeftInMilliseconds = 10000; // 10 sec
+    private long timeLeftInMilliseconds = 1000; // 1 sec
     private boolean isRecording = false;
     private String recordPermission = Manifest.permission.RECORD_AUDIO;
     private String folderPermission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -60,6 +60,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     short[] audioData;
     private ClientSocket socket;
+    private String path;
 
 
     public RecordFragment() {
@@ -132,12 +133,12 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private void stopRec() {
         stopRecording();
         recordBtn.setImageResource(R.drawable.record_button);
-        timeLeftInMilliseconds = 10000;
+        timeLeftInMilliseconds = 1000;
         countDownTimer.cancel();
-        countdownText.setText("0:10");
+        countdownText.setText("0:01");
         timerRunning = false;
         isRecording = false;
-        socket.run();
+        socket.run(path);
 
 
 
@@ -150,7 +151,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         if (!file.exists()) {
             file.mkdirs();
         }
-
+        path = file.getAbsolutePath() + "/audio.wav";
         return (file.getAbsolutePath() + "/" + "audio" +
                 AUDIO_RECORDER_FILE_EXT_WAV);
     }
