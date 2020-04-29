@@ -138,8 +138,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         countdownText.setText("0:01");
         timerRunning = false;
         isRecording = false;
-        socket.run(path);
-
+        socket.send(path);
 
 
     }

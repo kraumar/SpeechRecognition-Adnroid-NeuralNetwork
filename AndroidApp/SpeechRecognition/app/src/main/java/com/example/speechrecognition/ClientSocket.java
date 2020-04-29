@@ -2,22 +2,26 @@ package com.example.speechrecognition;
 
 import android.os.StrictMode;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class ClientSocket {
-    static  Socket s;
+public class ClientSocket{
 
-    public void run(String path){
+    private BufferedReader reader = null;
+
+    public void send(String path){
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -35,14 +39,16 @@ public class ClientSocket {
             while((count = in.read(bytes)) > 0){
                 out.write(bytes, 0, count);
             }
-
+            
             out.close();
             in.close();
             socket.close();
+
         }
 
         catch(Exception e){
             e.printStackTrace();}
     }
+
 }
 
