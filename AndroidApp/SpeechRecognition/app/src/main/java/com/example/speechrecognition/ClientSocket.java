@@ -2,6 +2,7 @@ package com.example.speechrecognition;
 
 import android.os.StrictMode;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,7 +20,7 @@ import java.net.UnknownHostException;
 
 public class ClientSocket{
 
-    private BufferedReader reader = null;
+    Socket socket = null;
 
     public void send(String path){
 
@@ -27,27 +28,47 @@ public class ClientSocket{
         StrictMode.setThreadPolicy(policy);
 
         try{
-            Socket socket=new Socket("192.168.43.53",2004);
-
+            socket=new Socket("192.168.43.53",2004);
             File file = new File(path);
-            long length = file.length();
             byte[] bytes = new byte[8000];
-            InputStream in = new FileInputStream(file);
             OutputStream out = socket.getOutputStream();
+            InputStream in = new FileInputStream(file);
 
             int count;
             while((count = in.read(bytes)) > 0){
                 out.write(bytes, 0, count);
             }
-            
-            out.close();
             in.close();
+            out.close();
             socket.close();
+
 
         }
 
         catch(Exception e){
             e.printStackTrace();}
+    }
+
+    public String receive(){
+
+        try{
+            Socket socket=new Socket("192.168.43.53",2001);
+            DataInputStream din=new DataInputStream(socket.getInputStream());
+            String str = din.readUTF();//in.readLine();
+            System.out.println("Message: "+str);
+            din.close();
+            socket.close();
+            return str;
+
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return "Error";
+        }
+
+
+
+
     }
 
 }

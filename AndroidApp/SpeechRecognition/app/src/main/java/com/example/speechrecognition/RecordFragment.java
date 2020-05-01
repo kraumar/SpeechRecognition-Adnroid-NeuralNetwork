@@ -28,6 +28,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.util.concurrent.TimeUnit;
+
 
 
 
@@ -35,11 +37,12 @@ import java.io.IOException;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RecordFragment extends Fragment implements View.OnClickListener {
+public class RecordFragment extends Fragment implements View.OnClickListener  {
 
     private NavController navController;
     private ImageView recordBtn;
     private TextView countdownText;
+    private TextView resultText;
     private CountDownTimer countDownTimer;
     private long timeLeftInMilliseconds = 1000; // 1 sec
     private boolean isRecording = false;
@@ -61,6 +64,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     short[] audioData;
     private ClientSocket socket;
     private String path;
+    private String res_str;
 
 
     public RecordFragment() {
@@ -80,6 +84,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         navController = Navigation.findNavController(view);
         recordBtn = view.findViewById(R.id.record_btn);
         countdownText = view.findViewById(R.id.countdown_text);
+        resultText = view.findViewById(R.id.record_text);
         recordBtn.setOnClickListener(this);
 
         bufferSize = AudioRecord.getMinBufferSize
@@ -132,15 +137,22 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
     private void stopRec() {
         stopRecording();
+
+        socket.send(path);
         recordBtn.setImageResource(R.drawable.record_button);
         timeLeftInMilliseconds = 1000;
         countDownTimer.cancel();
         countdownText.setText("0:01");
         timerRunning = false;
         isRecording = false;
-        socket.send(path);
-
-
+        try {
+            TimeUnit.MILLISECONDS.sleep(1000);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        res_str = socket.receive();
+        resultText.setText(res_str);
     }
 
     private String getFilename(){
