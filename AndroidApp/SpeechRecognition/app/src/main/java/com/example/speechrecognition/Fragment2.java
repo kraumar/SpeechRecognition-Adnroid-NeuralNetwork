@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RecordFragment extends Fragment implements View.OnClickListener  {
+public class Fragment2 extends Fragment implements View.OnClickListener  {
 
     private NavController navController;
     private ImageView recordBtn;
@@ -68,7 +68,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener  {
     private String res_str;
 
 
-    public RecordFragment() {
+    public Fragment2() {
         // Required empty public constructor
     }
 
@@ -76,16 +76,16 @@ public class RecordFragment extends Fragment implements View.OnClickListener  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_record, container, false);
+        return inflater.inflate(R.layout.fragment_2, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
-        recordBtn = view.findViewById(R.id.record_btn);
-        countdownText = view.findViewById(R.id.countdown_text);
-        resultText = view.findViewById(R.id.record_text);
+        recordBtn = view.findViewById(R.id.record_btn2);
+        countdownText = view.findViewById(R.id.countdown_text2);
+        resultText = view.findViewById(R.id.record_text2);
         recordBtn.setOnClickListener(this);
 
         bufferSize = AudioRecord.getMinBufferSize
@@ -99,7 +99,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener  {
     public void onClick(View v){
         switch (v.getId()){
 
-            case R.id.record_btn:
+            case R.id.record_btn2:
                 if(isRecording){
                     //Stop Recording
                     isRecording = false;
@@ -108,10 +108,10 @@ public class RecordFragment extends Fragment implements View.OnClickListener  {
                 else{
                     //Start Recording
 
-                        if(checkPermissionsMic() && checkPermissionsDir()) {
-                            isRecording = true;
-                            startRec();
-                        }
+                    if(checkPermissionsMic() && checkPermissionsDir()) {
+                        isRecording = true;
+                        startRec();
+                    }
 
                 }
                 break;
@@ -153,11 +153,11 @@ public class RecordFragment extends Fragment implements View.OnClickListener  {
             e.printStackTrace();
         }
         res_str = socket.receive();
-        if(res_str.equals("zero")){
-            navController.navigate(R.id.action_recordFragment_to_fragment1);
+        if(res_str.equals("go")){
+            navController.navigate(R.id.action_fragment2_to_recordFragment);
         }
-        else if(res_str.equals("wow")){
-            navController.navigate(R.id.action_recordFragment_to_fragment2);
+        if(res_str.equals("zero")){
+            navController.navigate(R.id.action_fragment2_to_fragment1);
         }
         else {
             resultText.setText("no command like this");

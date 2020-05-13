@@ -28,7 +28,7 @@ public class ClientSocket{
         StrictMode.setThreadPolicy(policy);
 
         try{
-            socket=new Socket("192.168.43.53",2004);
+            socket=new Socket("192.168.43.53",2005);
             File file = new File(path);
             byte[] bytes = new byte[8000];
             OutputStream out = socket.getOutputStream();

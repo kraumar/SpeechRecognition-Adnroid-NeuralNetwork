@@ -5,7 +5,7 @@ import numpy as np
 
 soc = socket.socket()
 host = "192.168.43.53"
-port = 2004
+port = 2005
 soc.bind((host, port))
 soc.listen(5)
 
